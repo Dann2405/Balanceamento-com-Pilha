@@ -44,5 +44,5 @@ Este programa utiliza **Pilha (Stack)** para verificar se a expressão matemáti
 
 ---
 
-### **Autor**
+###📌 **Autores**
  **Camila Gomes, Daniel Soares e Rauan Brandão**
