@@ -13,7 +13,7 @@ int main()
     cout << "\nDigite uma expressão: ";
     getline(cin >> ws, expressao);
 
-    balanceamento(expressao); // Chamada correta da função
+    balanceamento(expressao); // Chamada da função de balanceamento
     return 0;
 }
 
