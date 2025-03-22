@@ -138,4 +138,6 @@ void balanceamento(string expressao) // Função que verifica se a expressão es
             cout << "\nExpressão balanceada: " << resultado << "\n\n";
         }
     }
+    else
+        cout << "\nExpressao balanceada!";
 }
