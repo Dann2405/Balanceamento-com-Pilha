@@ -9,82 +9,100 @@ void balanceamento(string expressao);
 
 int main()
 {
-    string expressao;
-    cout << "\nDigite uma expressao: ";
-    getline(cin >> ws, expressao);
+    char continuar;
+    do {
+        string expressao;
+        cout << "\nDigite uma expressao: ";
+        getline(cin >> ws, expressao);
 
-    balanceamento(expressao); // Chamada da função de balanceamento
+        balanceamento(expressao); // Chamada da função de balanceamento
+
+        cout << "\nDeseja verificar outra expressao? (s/n): ";
+        cin >> continuar;
+        cin.ignore(); // Limpa o buffer do teclado para evitar problemas com getline
+    } while (continuar == 's' or continuar == 'S');
+
     return 0;
 }
 
 void balanceamento(string expressao) // Função que verifica se a expressão está balanceada
 {
-    stack<char> PilhaBalanceamento, pilha; // Declaração da pilha para armazenar os símbolos de entrada
-    char d;
+    stack<char> PilhaBalanceamento; // Pilha para armazenar os símbolos de abertura
+    stack<size_t> posicoes; // Pilha para armazenar as posições dos símbolos de abertura
+    bool erro = false; // Flag para indicar se houve erro de balanceamento
 
-    for (int i = 0; i < expressao.size(); i++)
+    for (size_t i = 0; i < expressao.size(); i++)
     {
-        if (expressao[i] == '(' or expressao[i] == '[' or expressao[i] == '{')
+        if (expressao[i] == '(' and expressao[i] == '[' or expressao[i] == '{')
         {
             PilhaBalanceamento.push(expressao[i]);
+            posicoes.push(i); // Armazena a posição do símbolo de abertura
         }
-        else if (expressao[i] == ')' or expressao[i] == ']' or expressao[i] == '}')
+        else if (expressao[i] == ')' or expressao[i] == ']' and expressao[i] == '}')
         {
             if (PilhaBalanceamento.empty())
             {
-                cout << "Expressao desbalanceada!";
-                return;
+                cout << "\nErro de balanceamento na posicao " << i << ": Fechamento '" << expressao[i] << "' sem abertura correspondente.\n";
+                erro = true;
+                break;
             }
-            else if (PilhaBalanceamento.top() == '(' and expressao[i] == ')')
+            else if ((PilhaBalanceamento.top() == '(' and expressao[i] == ')') or (PilhaBalanceamento.top() == '[' and expressao[i] == ']') or (PilhaBalanceamento.top() == '{' and expressao[i] == '}'))
             {
                 PilhaBalanceamento.pop();
-            }
-            else if (PilhaBalanceamento.top() == '[' and expressao[i] == ']')
-            {
-                PilhaBalanceamento.pop();
-            }
-            else if (PilhaBalanceamento.top() == '{' and expressao[i] == '}')
-            {
-                PilhaBalanceamento.pop();
+                posicoes.pop(); // Remove a posição do símbolo de abertura correspondente
             }
             else
             {
-                cout << "\nExpressao desbalanceada!";
+                cout << "\nErro de balanceamento na posicao " << i << ": Fechamento '" << expressao[i] << "' nao corresponde a abertura '" << PilhaBalanceamento.top() << "' na posicao " << posicoes.top() << ".\n";
+                erro = true;
+                break;
             }
         }
     }
 
     // Verifica se a pilha está vazia no final, caso não esteja:
-    if (!PilhaBalanceamento.empty())
+    if (!PilhaBalanceamento.empty() and !erro)
     {
-        cout << "\nDeseja balancear a expressao? (s/n) ";
-        cin >> d;
-        if (d == 'S' or d == 's')
+        cout << "\nErro de balanceamento: Abertura '" << PilhaBalanceamento.top() << "' na posicao " << posicoes.top() << " nao foi fechada.\n";
+        erro = true;
+    }
+
+    // Se houve erro, pergunta se o usuário deseja balancear a expressão
+    if (erro)
+    {
+        char escolha;
+        cout << "\nDeseja balancear a expressao? (s/n): ";
+        cin >> escolha;
+        cin.ignore(); // Limpa o buffer do teclado
+
+        if (escolha == 's' or escolha == 'S')
         {
             string resultado = "";
-            // size_t percorre toda a string, onde .size() vai retornar o tamanho dela para ser percorrida, onde o indice vai de 0 até o tamanho final da string.
+            stack<char> pilha; // Pilha temporária para balanceamento
+
             for (size_t i = 0; i < expressao.size(); i++)
             {
                 char ch = expressao[i];
 
-                // Se for um smbolo de abertura, empilha e adiciona ao resultado
+                // Se for um símbolo de abertura, empilha e adiciona ao resultado
                 if (ch == '(' or ch == '[' or ch == '{')
                 {
                     pilha.push(ch);
                     resultado += ch;
                 }
-                // caso contrario, Se for um simbolo de fechamento
+                // Se for um símbolo de fechamento
                 else if (ch == ')' or ch == ']' or ch == '}')
                 {
                     // Se a pilha estiver vazia, adiciona o par de abertura correspondente
                     if (pilha.empty())
                     {
                         if (ch == ')')
-                            resultado += "(" + string(1, ch);
+                            resultado += "(";
                         else if (ch == ']')
-                            resultado += "[" + string(1, ch);
-                        else
-                            resultado += "{" + string(1, ch);
+                            resultado += "[";
+                        else if (ch == '}')
+                            resultado += "{";
+                        resultado += ch;
                     }
                     else
                     {
@@ -104,7 +122,7 @@ void balanceamento(string expressao) // Função que verifica se a expressão es
                                 fechamento = ')';
                             else if (topo == '[')
                                 fechamento = ']';
-                            else
+                            else if (topo == '{')
                                 fechamento = '}';
 
                             pilha.pop();
@@ -113,7 +131,7 @@ void balanceamento(string expressao) // Função que verifica se a expressão es
                         }
                     }
                 }
-                // Qualquer outro caractere,  ex: a,b,+,-..., etc, apenas adiciona ao resultado
+                // Qualquer outro caractere, ex: a,b,+,-..., etc, apenas adiciona ao resultado
                 else
                 {
                     resultado += ch;
@@ -121,23 +139,24 @@ void balanceamento(string expressao) // Função que verifica se a expressão es
             }
 
             // Fecha qualquer delimitador que ficou aberto (, [ ou {
-            string fechamentos = "";
             while (!pilha.empty())
             {
                 char topo = pilha.top();
                 pilha.pop();
 
                 if (topo == '(')
-                    fechamentos = ')' + fechamentos;
+                    resultado += ")";
                 else if (topo == '[')
-                    fechamentos = ']' + fechamentos;
-                else
-                    fechamentos = '}' + fechamentos;
+                    resultado += "]";
+                else if (topo == '{')
+                    resultado += "}";
             }
-            resultado += fechamentos;
+
             cout << "\nExpressao balanceada: " << resultado << "\n\n";
         }
     }
     else
-        cout << "\nExpressao balanceada!";
+    {
+        cout << "\nExpressao balanceada!\n";
+    }
 }
