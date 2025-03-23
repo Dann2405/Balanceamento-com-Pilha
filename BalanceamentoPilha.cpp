@@ -10,7 +10,7 @@ void balanceamento(string expressao);
 int main()
 {
     string expressao;
-    cout << "\nDigite uma expressão: ";
+    cout << "\nDigite uma expressao: ";
     getline(cin >> ws, expressao);
 
     balanceamento(expressao); // Chamada da função de balanceamento
@@ -32,7 +32,7 @@ void balanceamento(string expressao) // Função que verifica se a expressão es
         {
             if (PilhaBalanceamento.empty())
             {
-                cout << "Expressão desbalanceada!";
+                cout << "Expressao desbalanceada!";
                 return;
             }
             else if (PilhaBalanceamento.top() == '(' and expressao[i] == ')')
@@ -49,7 +49,7 @@ void balanceamento(string expressao) // Função que verifica se a expressão es
             }
             else
             {
-                cout << "\nExpressão desbalanceada!";
+                cout << "\nExpressao desbalanceada!";
             }
         }
     }
@@ -135,7 +135,7 @@ void balanceamento(string expressao) // Função que verifica se a expressão es
                     fechamentos = '}' + fechamentos;
             }
             resultado += fechamentos;
-            cout << "\nExpressão balanceada: " << resultado << "\n\n";
+            cout << "\nExpressao balanceada: " << resultado << "\n\n";
         }
     }
     else
