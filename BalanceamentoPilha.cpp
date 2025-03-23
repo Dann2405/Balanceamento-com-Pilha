@@ -11,17 +11,26 @@ int main()
 {
     char continuar;
     do {
+        
+        #ifdef _WIN32
+            system("cls");
+        #else
+            system("clear");
+        #endif
+        cout << "==========================================";
+        cout << "\n\tBALANCEAMENTO COM PILHA";
+        cout << "\n==========================================";
         string expressao;
         cout << "\nDigite uma expressao: ";
         getline(cin >> ws, expressao);
-
+        cout << "==========================================";
         balanceamento(expressao); // Chamada da função de balanceamento
 
         cout << "\nDeseja verificar outra expressao? (s/n): ";
         cin >> continuar;
         cin.ignore(); // Limpa o buffer do teclado para evitar problemas com getline
     } while (continuar == 's' or continuar == 'S');
-
+        cout << "fechando o programa...";
     return 0;
 }
 
@@ -33,12 +42,12 @@ void balanceamento(string expressao) // Função que verifica se a expressão es
 
     for (size_t i = 0; i < expressao.size(); i++)
     {
-        if (expressao[i] == '(' and expressao[i] == '[' or expressao[i] == '{')
+        if (expressao[i] == '(' or expressao[i] == '[' or expressao[i] == '{')
         {
             PilhaBalanceamento.push(expressao[i]);
             posicoes.push(i); // Armazena a posição do símbolo de abertura
         }
-        else if (expressao[i] == ')' or expressao[i] == ']' and expressao[i] == '}')
+        else if (expressao[i] == ')' or expressao[i] == ']' or expressao[i] == '}')
         {
             if (PilhaBalanceamento.empty())
             {
@@ -151,8 +160,9 @@ void balanceamento(string expressao) // Função que verifica se a expressão es
                 else if (topo == '{')
                     resultado += "}";
             }
-
-            cout << "\nExpressao balanceada: " << resultado << "\n\n";
+            
+            cout << "\nExpressao balanceada: " << resultado << "\n";
+            cout << "==========================================";
         }
     }
     else
